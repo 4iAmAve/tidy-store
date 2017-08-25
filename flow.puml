@@ -1,0 +1,61 @@
+@startuml
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+database AppState
+database Versions
+actor Client
+participant Release
+
+== Build Tools ==
+
+Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders
+
+note over Release #8fe68f: versionHash="8fe68f"
+
+alt changes in storage-related files / folders
+    |||
+    Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders
+
+    rnote over Release #fff: versionHash inferred from\ncontents of storage-related files\ne.g.:
+    note over Release #ffd18a: versionHash="ffd18a"
+    note over Release #a3e8f9: versionHash="a3e8f9"
+    rnote over Release #fff: etc pp. Also considers a \'".version\'" file
+|||
+else no changes in storage-related files / folders
+|||
+    Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders
+    note over Release #8fe68f: versionHash="8fe68f"
+|||
+end
+
+==  ==
+
+Client -> Release: GET /
+
+activate Client
+
+Release --> Client: Bundle contains\nversionHash
+
+== TidyStorage Promise ==
+
+Client -> Versions: getVersions ( )
+Versions --> Client: versions
+
+Client -> Client: determineStaleVersions ( )\nreturns versions array\nwithout versionHash
+
+alt staleVersions empty
+|||
+else staleVersions not empty
+|||
+   Client -> Client: resetStaleVersions
+   Client -> Versions: clearVersionStorage ( )
+   Client -> AppState: clearAppStorage ( )
+end
+
+Client -> Versions: setVersion ( versionHash )
+
+deactivate Client
+
+== TidyStorage Promise fulfilled ==
+
+@enduml
