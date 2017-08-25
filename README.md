@@ -24,6 +24,9 @@ Release --> Release: define versionHash by glob-hashing\n    storage-related fil
 note over Release %238fe68f: versionHash="8fe68f";
 
 alt changes in storage-related files / folders;
+    |||;
+    Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders;
+
     rnote over Release %23fff: versionHash inferred from\ncontents of storage-related files\ne.g.:;
     note over Release %23ffd18a: versionHash="ffd18a";
     note over Release %23a3e8f9: versionHash="a3e8f9";
@@ -31,7 +34,8 @@ alt changes in storage-related files / folders;
 |||;
 else no changes in storage-related files / folders;
 |||;
-note over Release %238fe68f: versionHash="8fe68f";
+    Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders;
+    note over Release %238fe68f: versionHash="8fe68f";
 |||;
 end;
 
