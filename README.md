@@ -13,23 +13,23 @@ tidy-store-puml @startuml;
 skinparam ParticipantPadding 20;
 skinparam BoxPadding 10;
 database AppState;
-database Versions;
 actor Client;
 participant Server;
 participant Build;
 
 == Build Tools ==;
 
-Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
-
 note over Build %238fe68f: currentVersion="8fe68f";
 Build -> Server: deployment;
 
+hnote over Build: Repository Updates;
+
+Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
+
+rnote over Build %23fff: currentVersion inferred from\ncontents of storage-related files\ne.g.:;
+
 alt changes in storage-related files / folders;
     |||;
-    Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
-
-    rnote over Build %23fff: currentVersion inferred from\ncontents of storage-related files\ne.g.:;
     note over Build %23ffd18a: currentVersion="ffd18a";
     note over Build %23a3e8f9: currentVersion="a3e8f9";
     rnote over Build %23fff: etc pp. Also considers a \'".version\'" file;
@@ -37,7 +37,6 @@ alt changes in storage-related files / folders;
 |||;
 else no changes in storage-related files / folders;
 |||;
-    Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
     note over Build %238fe68f: currentVersion="8fe68f";
     Build -> Server: deployment;
 |||;
@@ -53,8 +52,8 @@ Server --> Client: Bundle contains\ncurrentVersion;
 
 == TidyStorage Promise ==;
 
-Client -> Versions: getVersion %28 %29;
-Versions --> Client: cachedVersion;
+Client -> AppState: getVersion %28 %29;
+AppState --> Client: cachedVersion;
 
 Client -> Client: isLatestVersion?\ntrue if currentVersion === cachedVersion;
 
@@ -62,11 +61,10 @@ alt isLatestVersion === true;
 |||;
 else isLatestVersion === false;
 |||;
-   Client -> Versions: clearVersionStorage %28 %29;
    Client -> AppState: clearAppStorage %28 %29;
 end;
 |||;
-Client -> Versions: setVersion %28 currentVersion %29;
+Client -> AppState: setVersion %28 currentVersion %29;
 
 deactivate Client;
 
