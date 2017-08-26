@@ -15,55 +15,58 @@ skinparam BoxPadding 10;
 database AppState;
 database Versions;
 actor Client;
-participant Release;
+participant Server;
+participant Build;
 
 == Build Tools ==;
 
-Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders;
+Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
 
-note over Release %238fe68f: versionHash="8fe68f";
+note over Build %238fe68f: currentVersion="8fe68f";
+Build -> Server: deployment;
 
 alt changes in storage-related files / folders;
     |||;
-    Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders;
+    Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
 
-    rnote over Release %23fff: versionHash inferred from\ncontents of storage-related files\ne.g.:;
-    note over Release %23ffd18a: versionHash="ffd18a";
-    note over Release %23a3e8f9: versionHash="a3e8f9";
-    rnote over Release %23fff: etc pp. Also considers a \'".version\'" file;
+    rnote over Build %23fff: currentVersion inferred from\ncontents of storage-related files\ne.g.:;
+    note over Build %23ffd18a: currentVersion="ffd18a";
+    note over Build %23a3e8f9: currentVersion="a3e8f9";
+    rnote over Build %23fff: etc pp. Also considers a \'".version\'" file;
+    Build -> Server: deployment;
 |||;
 else no changes in storage-related files / folders;
 |||;
-    Release --> Release: define versionHash by glob-hashing\n    storage-related files / folders;
-    note over Release %238fe68f: versionHash="8fe68f";
+    Build --> Build: define currentVersion by glob-hashing\n    storage-related files / folders;
+    note over Build %238fe68f: currentVersion="8fe68f";
+    Build -> Server: deployment;
 |||;
 end;
 
 ==  ==;
 
-Client -> Release: GET /;
+Client -> Server: GET /;
 
 activate Client;
 
-Release --> Client: Bundle contains\nversionHash;
+Server --> Client: Bundle contains\ncurrentVersion;
 
 == TidyStorage Promise ==;
 
-Client -> Versions: getVersions %28 %29;
-Versions --> Client: versions;
+Client -> Versions: getVersion %28 %29;
+Versions --> Client: cachedVersion;
 
-Client -> Client: determineStaleVersions %28 %29\nreturns versions array\nwithout versionHash;
+Client -> Client: isLatestVersion?\ntrue if currentVersion === cachedVersion;
 
-alt staleVersions empty;
+alt isLatestVersion === true;
 |||;
-else staleVersions not empty;
+else isLatestVersion === false;
 |||;
-   Client -> Client: resetStaleVersions;
    Client -> Versions: clearVersionStorage %28 %29;
    Client -> AppState: clearAppStorage %28 %29;
 end;
-
-Client -> Versions: setVersion %28 versionHash %29;
+|||;
+Client -> Versions: setVersion %28 currentVersion %29;
 
 deactivate Client;
 
