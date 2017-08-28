@@ -14,10 +14,10 @@ incompatible states due to schema changes.
 tidy-store-puml @startuml;
 skinparam ParticipantPadding 20;
 skinparam BoxPadding 10;
+participant Build;
+participant Server;
 database AppState;
 actor Client;
-participant Server;
-participant Build;
 
 == Build Tools ==;
 
@@ -31,7 +31,7 @@ Build --> Build: define currentVersion by glob-hashing\n    storage-related file
 rnote over Build %23fff: currentVersion inferred from\ncontents of storage-related files\ne.g.:;
 
 alt changes in storage-related files / folders;
-    |||;
+|||;
     note over Build %23ffd18a: currentVersion="ffd18a";
     note over Build %23a3e8f9: currentVersion="a3e8f9";
     rnote over Build %23fff: etc pp. Also considers a \'".version\'" file;
