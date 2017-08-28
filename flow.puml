@@ -1,10 +1,10 @@
 @startuml
 skinparam ParticipantPadding 20
 skinparam BoxPadding 10
+participant Build
+participant Server
 database AppState
 actor Client
-participant Server
-participant Build
 
 == Build Tools ==
 
