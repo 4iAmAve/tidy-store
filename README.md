@@ -9,7 +9,8 @@ incompatible states due to schema changes.
 ![Alt text](https://g.gravizo.com/source/svg/tidy-store-puml?https%3A%2F%2Fraw.githubusercontent.com%2Fiilei%2Ftidy-store%2Fmaster%2FREADME.md)
 <details> 
 <summary></summary>
-``` 
+
+```
 tidy-store-puml @startuml;
 skinparam ParticipantPadding 20;
 skinparam BoxPadding 10;
@@ -73,4 +74,5 @@ deactivate Client;
 
 @enduml; tidy-store-puml
 ```
+
 </details>
