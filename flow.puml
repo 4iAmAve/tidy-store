@@ -51,9 +51,9 @@ alt isLatestVersion === true
 else isLatestVersion === false
 |||
    Client -> AppState: clearAppStorage ( )
+   Client -> AppState: setVersion ( currentVersion )
 end
 |||
-Client -> AppState: setVersion ( currentVersion )
 
 deactivate Client
 
