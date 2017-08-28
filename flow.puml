@@ -18,7 +18,7 @@ Build --> Build: define currentVersion by glob-hashing\n    storage-related file
 rnote over Build #fff: currentVersion inferred from\ncontents of storage-related files\ne.g.:
 
 alt changes in storage-related files / folders
-    |||
+|||
     note over Build #ffd18a: currentVersion="ffd18a"
     note over Build #a3e8f9: currentVersion="a3e8f9"
     rnote over Build #fff: etc pp. Also considers a \'".version\'" file
